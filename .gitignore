@@ -1,0 +1,11 @@
+LSST.conf
+ckpars.out
+ckpars.sh*
+extract_paramvalues.cmd*
+getparams*
+getparams.bu*
+lsst.pars
+moreconf.lis
+*.pyc
+test.sh*
+log/
