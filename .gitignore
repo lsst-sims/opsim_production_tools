@@ -8,3 +8,4 @@ lsst.pars
 moreconf.lis
 *.pyc
 test.sh*
+log/
