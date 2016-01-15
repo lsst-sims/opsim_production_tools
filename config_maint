@@ -1,0 +1,101 @@
+#!/usr/bin/env python
+
+import argparse
+import os
+import subprocess
+
+STANDARD_CONFIG_LOCATION = "/lsst/config"
+CONFIG_REPO = "https://github.com/lsst-sims/opsim3_config.git"
+MAIN_BRANCHES = ["master", "tier1", "neo"]
+NUM_TIER1 = 12
+NUM_NEO = 7
+
+def make_tier1_runs():
+    tier1_run_dirs = ["run{:02d}".format(i) for i in range(1, NUM_TIER1 + 1)]
+    tier1_run_dirs.remove("run04")
+    tier1_run_dirs.extend(["run04_3visits", "run04_4visits"])
+    return tier1_run_dirs
+
+def make_neo_runs():
+    neo_run_dirs = ["run{:02d}".format(i) for i in range(1, NUM_NEO + 1)]
+    return neo_run_dirs
+
+def check_retcode(rcode, message):
+    if rcode != 0:
+        print(message)
+
+def checkout_branches(head, runs):
+    for run in runs:
+        cdir = "{}_{}".format(head, run)
+        if os.path.exists(cdir):
+            continue
+        rbranch = "origin/{}/{}".format(head, run)
+        check_retcode(subprocess.call(["git", "clone", CONFIG_REPO, cdir]),
+                      "WARNING: Could not clone {} branch!".format(rbranch))
+        os.chdir(cdir)
+        check_retcode(subprocess.call(["git", "checkout", "-t", rbranch]),
+                      "WARNING: Could not checkout {} branch".format(rbranch))
+        os.chdir('..')
+
+def create_clones(debug):
+    for branch in MAIN_BRANCHES:
+        if branch == "master":
+            if not os.path.exists("baseline"):
+                check_retcode(subprocess.call(["git", "clone", CONFIG_REPO, "baseline"]),
+                              "WARNING: Could not clone master branch!")
+        if branch == "tier1":
+            checkout_branches(branch, make_tier1_runs())
+
+        if branch == "neo":
+            checkout_branches(branch, make_neo_runs())
+
+def update_clones(debug):
+    for dirpath, dirnames, filenames in os.walk('.'):
+        if debug:
+            print(dirnames)
+        for dirname in dirnames:
+            if debug:
+                print("Entering {}".format(dirname))
+            os.chdir(dirname)
+            # do git update
+            print("Updating {}".format(dirname))
+            check_retcode(subprocess.call(["git", "fetch"]),
+                          "WARNING: git fetch failed on {}".format(dirname))
+            check_retcode(subprocess.call(["git", "rebase"]),
+                          "WARNING: git rebase failed on {}".format(dirname))
+            os.chdir('..')
+        # Stop at top-level directories
+        break
+
+def main(opts):
+    if not os.path.exists(opts.config_loc):
+        raise RuntimeError("Configuration directory: {} does not exist!".format(opts.config_loc))
+
+    os.chdir(opts.config_loc)
+
+    if opts.create:
+        create_clones(opts.debug)
+    if opts.update:
+        update_clones(opts.debug)
+
+if __name__ == '__main__':
+    description = ["This script is meant to handle configuration management on the OpSim production"]
+    description.append("machines.")
+    parser = argparse.ArgumentParser(usage="config_maint [options]", description=" ".join(description),
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+                                     version="1.0.0")
+
+    action_group = parser.add_mutually_exclusive_group(required=True)
+    action_group.add_argument("-c", "--create", dest="create", action="store_true",
+                              help="Clone all of the standard OpSim configurations.")
+    action_group.add_argument("-u", "--update", dest="update", action="store_true",
+                              help="Update all of the configuration clones.")
+
+    parser.add_argument("--config-loc", dest="config_loc", default=STANDARD_CONFIG_LOCATION,
+                        help="Option for passing the configuration directory if it is not in the standard "
+                        "location.")
+    parser.add_argument("-d", "--debug", dest="debug", action="store_true",
+                        help="Print extra output to screen.")
+
+    args = parser.parse_args()
+    main(args)
