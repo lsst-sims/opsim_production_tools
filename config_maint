@@ -68,6 +68,7 @@ def update_clones(debug):
         break
 
 def main(opts):
+    opts.config_loc = os.path.expanduser(os.path.expandvars(opts.config_loc))
     if not os.path.exists(opts.config_loc):
         raise RuntimeError("Configuration directory: {} does not exist!".format(opts.config_loc))
 
