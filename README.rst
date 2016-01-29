@@ -31,13 +31,15 @@ There is a machine dependent configuration file for running opsim_launch.sh
     export RUN_DIR=${HOME}/lsst-run
     export CONF_DIR=${HOME}/lsst-opsim
 
+Process Definition
+------------------
 
 Setup machine specific environment variables
   * source ./launch.conf 
   * NOTE: this is a symlink to hostname-launch.conf located in $RUN_DIR
     source /usr/local/etc/opsim/launch.conf  
 
-User reviews parameters in all configuration files (/lsst/opsim_3_x_y/conf/).
+Review parameters in all configuration files (/lsst/opsim_3_x_y/conf/)
   * User reviews file names specified in LSST.conf (or other name specified by --config).
   * User needs ssh keys set up between relevant machines.
 
@@ -48,10 +50,10 @@ Setup simulator
 Setup configuration files 
   * See `opsim3_config <https://github.com/lsst-sims/opsim3_config>` as described in the `OpSim installation documentation <http://ops2.lsst.org/docs/configuration.html#configuration>` where $OPSIM3_CONFIG_DIR is the path to LSST.conf ($CONF_DIR in launch.conf)
 
-Identify and save configuration files to repository.
+Identify and save configuration files to repository
   * Read the LSST.conf file for only the configuration files that are used.
 
-Run simulation.
+Run simulation
   * opsim_launch.sh "startup comment” $CONF_DIR/survey/LSST.conf >& $RUN_DIR/log/myRun$nextId.log &
 
 Record run in Run Log
