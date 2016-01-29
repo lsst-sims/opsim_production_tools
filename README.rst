@@ -4,14 +4,14 @@ Description
 
 Assumptions
 -----------
-* this script will be called from machines ops1, ops2, enigma, minion, ursula, etc.
-* configuration files for each machine will exist (as part of installation)in /usr/local/etc/conf/opsim/launch.conf (symlink to hostname-launch.conf)
-* mysql should be running  (mysqld start in .cshrc)
-* sims_operations is installed in the standard way
-* sims_operations local directory is setup up in the standard way
-* opsim3_config local directory is set up 
-* ?? assumes a call from the "local" directory - /lsst/opsim_3.x.y/
-* this is bash script and can be executed from a tcsh shell.
+* This script will be called from machines ops1, ops2, enigma, minion, ursula, etc.
+* Configuration files for each machine will exist (as part of installation)in /usr/local/etc/conf/opsim/launch.conf (symlink to hostname-launch.conf)
+* mySQL should be running  (mysqld start in .cshrc)
+* OpSim (sims_operations) is installed in the standard way.
+* The sims_operations run ("local") directory is set up in the standard way.
+* The opsim3_config local directory is installed and set up.
+* The script is called from the "local" directory (/lsst/opsim_3.x.y/)
+* This is bash script and can be executed from a tcsh shell.
 
 Configuration File
 ------------------
@@ -39,49 +39,46 @@ User reviews parameters in all configuration files (/lsst/opsim_3_x_y/conf/).
 # (or other name specified by --config).
 # User needs ssh keys set up between relevant machines.
 
-Setup simulator
-source /lsst_stack/loadLSST.csh
-setup sims_operations –t $version
+# Setup simulator
 
-Setup configuration files (see github reference) in
-http://ops2.lsst.org/docs/configuration.html#configuration
-$OPSIM3_CONFIG_DIR is the path to LSST.conf (CONF_DIR)
+* source /lsst_stack/loadLSST.csh
+* setup sims_operations –t $version
 
-Identify and Save configuration files to repository
+# Setup configuration files (`opsim3_config <https://github.com/lsst-sims/opsim3_config>`) as described in the `OpSim installation documentation <http://ops2.lsst.org/docs/configuration.html#configuration>` where
+$OPSIM3_CONFIG_DIR is the path to LSST.conf ($CONF_DIR in launch.conf)
 
-Run simulation
-opsim_launch.sh "startup comment” $CONF_DIR/survey/LSST.conf >& $RUN_DIR/log/myRun$nextId.log &
+# Identify and save configuration files to repository.
 
-record run in Run Log
-collect process ID for opsim.py
-call opsim_monitor.py
+# Run simulation.
+* opsim_launch.sh "startup comment” $CONF_DIR/survey/LSST.conf >& $RUN_DIR/log/myRun$nextId.log &
 
-opsim_monitor.py <processID>
-track progress of simulation and send messages as appropriate
-(simulation has ended when max_nights = nRun * 365 
+# Record run in Run Log
+* collect process ID for opsim.py
+* call opsim_monitor.py
+
+# opsim_monitor.py <processID>
+* track progress of simulation and send messages as appropriate (simulation has ended when max_nights = nRun * 365 
 & processID doesn’t exist)
-call opsim_postprocess.py
+* call opsim_postprocess.py
 
-opsim_postprocess.py <sessionID>
-creates the database files needed for analysis (MAF) using
-$SIMS_OPERATIONS_DIR/tools/modifySchema.sh sessionID
-gzips files (preserving unzipped files)
-moves sql & sqlite files to repository ($REPO_MACHINE:$REPO_PATH)
-save lsst.log_xxx file and stdout/stderr log??
-send completion message
-leave a breadcrumb for maf_watcher.py to pickup
+# opsim_postprocess.py <sessionID>
+* create the database files needed for analysis (MAF) using $SIMS_OPERATIONS_DIR/tools/modifySchema.sh sessionID
+* gzip files (preserving unzipped files)
+* move sql & sqlite files to repository ($REPO_MACHINE:$REPO_PATH)
+* save lsst.log_xxx file and stdout/stderr log??
+* send completion message
+* leave a breadcrumb for maf_watcher.py to pickup
 
-maf_watch.py 
-cron job to start and monitor MAF standard scripts
-(opsim = maf-dev)
-look for breadcrumb (completed modifySchema)
-setup maf
-start maf scripts (define output dir in launch.conf)
-move results files to repository location
-add results to trackingDB (allruns_sqlite.db &/or tier1_sqlite.db)
-shutdown and restart showMaf.py on appropriate port
-optionally create an offline viewable version (portable)
-send completion message
+# maf_watch.py 
+* cron job to start and monitor MAF standard scripts (opsim = maf-dev)
+* look for breadcrumb (completed modifySchema)
+* setup maf
+* start maf scripts (define output dir in launch.conf)
+* move results files to repository location
+* add results to trackingDB (allruns_sqlite.db &/or tier1_sqlite.db)
+* shutdown and restart showMaf.py on appropriate port
+* optionally create an offline viewable version (portable)
+* send completion message
 
      
 Distribution: Confluence page - automatically generate; previous version of Tier 1;  annotations; links to showMaf, run_log, and data sqlite files.
