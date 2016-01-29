@@ -38,24 +38,18 @@ There is a machine dependent configuration file for running opsim_launch.sh
     # hostname-launch.conf located in $RUN_DIR
     source ./launch.conf 
 
-#. User reviews parameters in all configuration files (/lsst/opsim_3_x_y/conf/).
-
-* User reviews file names specified in LSST.conf (or other name specified by --config).
-* User needs ssh keys set up between relevant machines.
+User reviews parameters in all configuration files (/lsst/opsim_3_x_y/conf/).
+  * User reviews file names specified in LSST.conf (or other name specified by --config).
+  * User needs ssh keys set up between relevant machines.
 
 #. Setup simulator
-
 * source /lsst_stack/loadLSST.csh
 * setup sims_operations –t $version
-
 #. Setup configuration files (`opsim3_config <https://github.com/lsst-sims/opsim3_config>`) as described in the `OpSim installation documentation <http://ops2.lsst.org/docs/configuration.html#configuration>` where
 $OPSIM3_CONFIG_DIR is the path to LSST.conf ($CONF_DIR in launch.conf)
-
 #. Identify and save configuration files to repository.
-
 #. Run simulation.
 * opsim_launch.sh "startup comment” $CONF_DIR/survey/LSST.conf >& $RUN_DIR/log/myRun$nextId.log &
-
 #. Record run in Run Log
 * collect process ID for opsim.py
 * call opsim_monitor.py
