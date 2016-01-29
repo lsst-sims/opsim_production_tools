@@ -38,34 +38,34 @@ There is a machine dependent configuration file for running opsim_launch.sh
     # hostname-launch.conf located in $RUN_DIR
     source ./launch.conf 
 
-#User reviews parameters in all configuration files (/lsst/opsim_3_x_y/conf/).
+#. User reviews parameters in all configuration files (/lsst/opsim_3_x_y/conf/).
 
 * User reviews file names specified in LSST.conf (or other name specified by --config).
 * User needs ssh keys set up between relevant machines.
 
-# Setup simulator
+#. Setup simulator
 
 * source /lsst_stack/loadLSST.csh
 * setup sims_operations –t $version
 
-# Setup configuration files (`opsim3_config <https://github.com/lsst-sims/opsim3_config>`) as described in the `OpSim installation documentation <http://ops2.lsst.org/docs/configuration.html#configuration>` where
+#. Setup configuration files (`opsim3_config <https://github.com/lsst-sims/opsim3_config>`) as described in the `OpSim installation documentation <http://ops2.lsst.org/docs/configuration.html#configuration>` where
 $OPSIM3_CONFIG_DIR is the path to LSST.conf ($CONF_DIR in launch.conf)
 
-# Identify and save configuration files to repository.
+#. Identify and save configuration files to repository.
 
-# Run simulation.
+#. Run simulation.
 * opsim_launch.sh "startup comment” $CONF_DIR/survey/LSST.conf >& $RUN_DIR/log/myRun$nextId.log &
 
-# Record run in Run Log
+#. Record run in Run Log
 * collect process ID for opsim.py
 * call opsim_monitor.py
 
-# opsim_monitor.py <processID>
+#. opsim_monitor.py <processID>
 * track progress of simulation and send messages as appropriate (simulation has ended when max_nights = nRun * 365 
 & processID doesn’t exist)
 * call opsim_postprocess.py
 
-# opsim_postprocess.py <sessionID>
+#. opsim_postprocess.py <sessionID>
 * create the database files needed for analysis (MAF) using $SIMS_OPERATIONS_DIR/tools/modifySchema.sh sessionID
 * gzip files (preserving unzipped files)
 * move sql & sqlite files to repository ($REPO_MACHINE:$REPO_PATH)
@@ -73,7 +73,7 @@ $OPSIM3_CONFIG_DIR is the path to LSST.conf ($CONF_DIR in launch.conf)
 * send completion message
 * leave a breadcrumb for maf_watcher.py to pickup
 
-# maf_watch.py 
+#. maf_watch.py 
 * cron job to start and monitor MAF standard scripts (opsim = maf-dev)
 * look for breadcrumb (completed modifySchema)
 * setup maf
