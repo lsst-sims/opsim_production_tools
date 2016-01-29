@@ -30,14 +30,16 @@ There is a machine dependent configuration file for running opsim_launch.sh
     export CONF_DIR=${HOME}/lsst-opsim
 
 
-# source /usr/local/etc/opsim/launch.conf  # NOTE: this is a symlink to
-# hostname-launch.conf located in $RUN_DIR
-source ./launch.conf 
+  .. code-block:: bash
 
-User reviews parameters in all configuration files (/lsst/opsim_3_x_y/conf/).
-# User reviews file names specified in LSST.conf
-# (or other name specified by --config).
-# User needs ssh keys set up between relevant machines.
+    # source /usr/local/etc/opsim/launch.conf  # NOTE: this is a symlink to
+    # hostname-launch.conf located in $RUN_DIR
+    source ./launch.conf 
+
+#User reviews parameters in all configuration files (/lsst/opsim_3_x_y/conf/).
+
+* User reviews file names specified in LSST.conf (or other name specified by --config).
+* User needs ssh keys set up between relevant machines.
 
 # Setup simulator
 
