@@ -32,11 +32,10 @@ There is a machine dependent configuration file for running opsim_launch.sh
     export CONF_DIR=${HOME}/lsst-opsim
 
 
-  .. code-block:: bash
-
-    # source /usr/local/etc/opsim/launch.conf  # NOTE: this is a symlink to
-    # hostname-launch.conf located in $RUN_DIR
-    source ./launch.conf 
+Setup machine specific environment variables
+  * source ./launch.conf 
+  * NOTE: this is a symlink to hostname-launch.conf located in $RUN_DIR
+    source /usr/local/etc/opsim/launch.conf  
 
 User reviews parameters in all configuration files (/lsst/opsim_3_x_y/conf/).
   * User reviews file names specified in LSST.conf (or other name specified by --config).
@@ -50,6 +49,7 @@ Setup configuration files
   * See `opsim3_config <https://github.com/lsst-sims/opsim3_config>` as described in the `OpSim installation documentation <http://ops2.lsst.org/docs/configuration.html#configuration>` where $OPSIM3_CONFIG_DIR is the path to LSST.conf ($CONF_DIR in launch.conf)
 
 Identify and save configuration files to repository.
+  * Read the LSST.conf file for only the configuration files that are used.
 
 Run simulation.
   * opsim_launch.sh "startup comment” $CONF_DIR/survey/LSST.conf >& $RUN_DIR/log/myRun$nextId.log &
@@ -81,8 +81,8 @@ maf_watch.py
   * optionally create an offline viewable version (portable)
   * send completion message
 
-     
-Distribution: Confluence page - automatically generate; previous version of Tier 1;  annotations; links to showMaf, run_log, and data sqlite files.
+Distribution of Everything (TBD)
+  * Confluence page - automatically generate; previous version of Tier 1;  annotations; links to showMaf, run_log, and data sqlite files.
 
  
 
