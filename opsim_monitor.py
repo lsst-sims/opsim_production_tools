@@ -40,8 +40,8 @@ if __name__ == '__main__':
         
     # test that the number of nights achieved corresponds to nights requested.
     #set maxnights
-    #set nRun
-    if max_nights != nRun:
+    #set nRun_nights = nRun * 365
+    if max_nights != nRun_nights:
         print("There is a problem that needs to be tracked down")
         #find the traceback error
     else:
