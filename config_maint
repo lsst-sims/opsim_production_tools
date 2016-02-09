@@ -13,7 +13,8 @@ NUM_NEO = 7
 def make_tier1_runs():
     tier1_run_dirs = ["run{:02d}".format(i) for i in range(1, NUM_TIER1 + 1)]
     tier1_run_dirs.remove("run04")
-    tier1_run_dirs.extend(["run04_3visits", "run04_4visits"])
+    tier1_run_dirs.insert(3, "run04_3visits")
+    tier1_run_dirs.insert(4, "run04_4visits")
     return tier1_run_dirs
 
 def make_neo_runs():
@@ -67,6 +68,26 @@ def update_clones(debug):
         # Stop at top-level directories
         break
 
+def fetch_sha1(debug):
+    update_clones(debug)
+    branches = ["baseline"]
+    branches.extend(["tier1_{}".format(run) for run in make_tier1_runs()])
+    branches.extend(["neo_{}".format(run) for run in make_neo_runs()])
+    for branch in branches:
+        os.chdir(branch)
+        p = subprocess.Popen(["git", "log", "-n 1", "--pretty=format:%h"], stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        out, err = p.communicate()
+        if len(out) == 0 or p.returncode != 0:
+            sha1 = "unknown"
+        else:
+            sha1 = out
+        if debug:
+            print("{} : {}".format(branch, sha1))
+        else:
+            print("{}".format(sha1))
+        os.chdir('..')
+
 def main(opts):
     opts.config_loc = os.path.expanduser(os.path.expandvars(opts.config_loc))
     if not os.path.exists(opts.config_loc):
@@ -78,6 +99,8 @@ def main(opts):
         create_clones(opts.debug)
     if opts.update:
         update_clones(opts.debug)
+    if opts.sha:
+        fetch_sha1(opts.debug)
 
 if __name__ == '__main__':
     description = ["This script is meant to handle configuration management on the OpSim production"]
@@ -91,6 +114,9 @@ if __name__ == '__main__':
                               help="Clone all of the standard OpSim configurations.")
     action_group.add_argument("-u", "--update", dest="update", action="store_true",
                               help="Update all of the configuration clones.")
+    action_group.add_argument("-s", "--sha", dest="sha", action="store_true",
+                              help="Fetch the SHA1 of all the main configurations. WARNING: This will update"
+                              " the repositories first!")
 
     parser.add_argument("--config-loc", dest="config_loc", default=STANDARD_CONFIG_LOCATION,
                         help="Option for passing the configuration directory if it is not in the standard "
